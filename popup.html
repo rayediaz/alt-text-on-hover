@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Alt Text Hover Inspector</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="panel">
+      <div class="header">
+        <div class="title">Alt Text Hover Inspector</div>
+        <div class="subtitle">SEO QA helper</div>
+      </div>
+
+      <div class="toggle-row">
+        <div class="toggle-text">
+          <span class="label">Status</span>
+          <span id="status" class="status">Enabled</span>
+        </div>
+        <label class="switch">
+          <input id="toggle" type="checkbox" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <section class="scan-section">
+        <button id="scan" class="primary">Scan page</button>
+        <div class="counts">
+          <div class="count">
+            <span class="count-label">Total</span>
+            <span id="count-total" class="count-value">0</span>
+          </div>
+          <div class="count">
+            <span class="count-label">Missing</span>
+            <span id="count-missing" class="count-value">0</span>
+          </div>
+          <div class="count">
+            <span class="count-label">Empty</span>
+            <span id="count-empty" class="count-value">0</span>
+          </div>
+        </div>
+        <div id="scan-status" class="scan-status"></div>
+        <div id="results" class="results"></div>
+        <div class="actions">
+          <button id="copy-json" class="ghost" disabled>Copy JSON</button>
+          <button id="copy-csv" class="ghost" disabled>Copy CSV</button>
+        </div>
+      </section>
+
+      <div class="hint">
+        Hover any image to reveal its alt text. Missing alt text is highlighted.
+      </div>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>

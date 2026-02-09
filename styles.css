@@ -1,0 +1,53 @@
+:root {
+  --ath-bg: #ffffff;
+  --ath-text: #1f1a17;
+  --ath-muted: #6b625d;
+  --ath-missing: #fe5f03;
+  --ath-border: rgba(254, 95, 3, 0.18);
+  --ath-shadow: 0 16px 32px rgba(31, 21, 15, 0.12);
+}
+
+.ath-tooltip {
+  position: fixed;
+  z-index: 2147483647;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--ath-bg);
+  color: var(--ath-text);
+  font-family: "Avenir Next", "IBM Plex Sans", "Segoe UI", sans-serif;
+  font-size: 13px;
+  line-height: 1.35;
+  letter-spacing: 0.2px;
+  border: 1px solid var(--ath-border);
+  box-shadow: var(--ath-shadow);
+  pointer-events: none;
+  user-select: none;
+  max-width: 420px;
+  animation: ath-fade-in 120ms ease-out;
+}
+
+.ath-tooltip-missing {
+  color: var(--ath-missing);
+}
+
+.ath-outline {
+  outline: 2px dashed var(--ath-missing) !important;
+  outline-offset: 3px !important;
+  border-radius: 2px;
+}
+
+.ath-flash {
+  box-shadow: 0 0 0 3px rgba(254, 95, 3, 0.65), 0 0 24px rgba(254, 95, 3, 0.45) !important;
+  transition: box-shadow 0.2s ease-out;
+}
+
+@keyframes ath-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
