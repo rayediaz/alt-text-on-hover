@@ -6,6 +6,7 @@ const HIGHLIGHT_CLASS = "ath-flash";
 let enabled = true;
 let activeImage = null;
 let tooltip = null;
+let copyMessageTimer = null;
 
 const getAltInfo = (alt) => {
   if (alt === null || alt === undefined) {
@@ -93,6 +94,11 @@ const showTooltip = (img, altText, missing, event) => {
 };
 
 const hideTooltip = () => {
+  if (copyMessageTimer) {
+    clearTimeout(copyMessageTimer);
+    copyMessageTimer = null;
+  }
+
   if (tooltip) {
     tooltip.style.display = "none";
   }
@@ -102,6 +108,56 @@ const hideTooltip = () => {
   }
 
   activeImage = null;
+};
+
+const copyToClipboard = async (text) => {
+  if (typeof navigator.clipboard?.writeText === "function") {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  textarea.style.pointerEvents = "none";
+  document.body.appendChild(textarea);
+  textarea.select();
+
+  const didCopy = document.execCommand("copy");
+  textarea.remove();
+
+  if (!didCopy) {
+    throw new Error("Copy command failed");
+  }
+};
+
+const showCopyMessage = (message, event, isError = false) => {
+  const tip = ensureTooltip();
+  tip.textContent = message;
+  tip.classList.toggle("ath-tooltip-missing", isError);
+  tip.style.display = "block";
+
+  if (event) {
+    updateTooltipPosition(event);
+  }
+
+  if (copyMessageTimer) {
+    clearTimeout(copyMessageTimer);
+  }
+
+  copyMessageTimer = setTimeout(() => {
+    const img = activeImage;
+    if (!img) {
+      return;
+    }
+
+    const { text, status } = getAltInfo(img.getAttribute("alt"));
+    const missing = status !== "present";
+    tip.textContent = missing ? "Missing alt text" : text;
+    tip.classList.toggle("ath-tooltip-missing", missing);
+  }, 1200);
 };
 
 const handleMouseOver = (event) => {
@@ -139,6 +195,32 @@ const handleMouseOut = (event) => {
   }
 
   hideTooltip();
+};
+
+const handleImageClick = async (event) => {
+  if (!enabled) {
+    return;
+  }
+
+  const img = event.target.closest("img");
+  if (!img) {
+    return;
+  }
+
+  activeImage = img;
+
+  const { text, status } = getAltInfo(img.getAttribute("alt"));
+  if (status !== "present") {
+    showCopyMessage("No alt text to copy", event, true);
+    return;
+  }
+
+  try {
+    await copyToClipboard(text);
+    showCopyMessage("Copied alt text", event);
+  } catch {
+    showCopyMessage("Unable to copy alt text", event, true);
+  }
 };
 
 const handleKeyDown = (event) => {
@@ -282,4 +364,9 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
 document.addEventListener("mouseover", handleMouseOver, true);
 document.addEventListener("mousemove", handleMouseMove, true);
 document.addEventListener("mouseout", handleMouseOut, true);
+document.addEventListener("click", (event) => {
+  handleImageClick(event).catch(() => {
+    showCopyMessage("Unable to copy alt text", event, true);
+  });
+}, true);
 document.addEventListener("keydown", handleKeyDown, true);
