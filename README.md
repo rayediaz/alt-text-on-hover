@@ -5,6 +5,7 @@ A browser extension that helps you perform QA for image accessibility and SEO. I
 ## Features
 
 - **Show Alt Text on Hover:** Hover over any image to instantly see its `alt` attribute.
+- **Click to Copy Alt Text:** Click any image with an `alt` value to copy it to your clipboard.
 - **Missing Alt Highlight:** Images without alt text get an orange outline and are flagged as accessibility risks.
 - **Popup Scanner:** Scan the current page for all images and get a breakdown of missing, empty, and total image counts.
 - **Jump to Images:** Quickly navigate to flagged images by clicking on scan results.
@@ -34,6 +35,7 @@ chrome://extensions
 ## Usage
 
 - Hover any image to see its alt text; missing alt images are outlined and labeled.
+- Click any image with alt text to copy its `alt` value to your clipboard.
 - Click the extension icon to open the popup:
   - Toggle the extension on or off.
   - Click **Scan page** to list all missing or empty alt text images.
